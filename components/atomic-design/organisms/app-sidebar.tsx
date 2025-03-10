@@ -10,26 +10,38 @@ import {
 } from '@/components/ui/sidebar';
 import { getSidebarItems } from '@/lib/router-config';
 import Link from 'next/link';
+import { motion } from 'framer-motion'; // Importamos framer-motion para las animaciones
 
 const AppSidebar = () => {
   const sidebarItems = getSidebarItems();
 
   return (
-    <Sidebar>
-      <SidebarContent>
+    <Sidebar className="bg-gray-800 text-black shadow-lg">
+      <SidebarContent className="py-4 px-6">
         <SidebarGroup>
-          <SidebarGroupLabel>AppLogo</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-2xl font-semibold text-center mb-6 text-indigo-400">
+            AppLogo
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {sidebarItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.url}>
-                      {item.icon && <item.icon />}
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <SidebarMenuItem className="transition-transform duration-300 hover:scale-105">
+                    <SidebarMenuButton asChild>
+                      <Link href={item.url} passHref>
+                        <div className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-indigo-600">
+                          {item.icon && <item.icon className="text-xl" />}
+                          <span>{item.title}</span>
+                        </div>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </motion.div>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>

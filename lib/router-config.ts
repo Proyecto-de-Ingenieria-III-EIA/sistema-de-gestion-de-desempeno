@@ -1,4 +1,4 @@
-import { Home, LogIn } from 'lucide-react';
+import { Home, LogIn, MessageSquare} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 export type RouteConfig = {
@@ -13,28 +13,30 @@ export type RouteConfig = {
 export const routerConfig: RouteConfig[] = [
   {
     id: 'home',
-    name: 'Home',
+    name: 'Pagina Principal',
     path: '/',
     isPublic: false,
-    icon: Home,
+    icon: Home, // Página de inicio
     showInSidebar: true,
   },
   {
-    id: 'home',
-    name: 'Page 2',
+    id: 'testimonios',
+    name: 'Testimonios',
     path: '/page-2',
     isPublic: false,
-    icon: Home,
+    icon: MessageSquare, // Testimonios (icono de mensajes)
     showInSidebar: true,
   },
   {
     id: 'login',
-    name: 'Login',
+    name: 'Cerrar Sesion',
     path: '/login',
     isPublic: true,
-    icon: LogIn,
-    showInSidebar: false,
+    icon: LogIn, // Cerrar sesión
+    showInSidebar: true,
   },
+ 
+
   // Add more routes as needed
 ];
 

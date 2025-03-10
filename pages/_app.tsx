@@ -37,7 +37,7 @@ const AppWrapper = ({ Component, pageProps }: AppProps) => {
   return (
     <>
       <Head>
-        <title>Nombre del Sitio</title>
+        <title>Sistema Desempeño</title>
         <link
           rel='apple-touch-icon'
           sizes='192x192'
