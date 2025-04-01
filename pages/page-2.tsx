@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { Title } from "@/components/atomic-design/atoms/texts/title";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart, ThumbsUp, Users } from "lucide-react";
 import Image from "next/image";

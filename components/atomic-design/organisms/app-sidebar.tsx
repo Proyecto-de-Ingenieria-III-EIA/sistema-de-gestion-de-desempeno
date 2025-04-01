@@ -9,11 +9,19 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { getSidebarItems } from '@/lib/router-config';
-import Link from 'next/link';
+import { signOut } from 'next-auth/react'; // Importamos signOut de next-auth
+import Link from 'next/link'; // Importamos Link de next/link
 import { motion } from 'framer-motion'; // Importamos framer-motion para las animaciones
+
 
 const AppSidebar = () => {
   const sidebarItems = getSidebarItems();
+
+
+  const handleLogout = () => {
+    // Ejecutamos signOut y redirigimos al inicio
+    signOut({ callbackUrl: window.location.origin }); // Se redirige al home después de cerrar sesión
+  };
 
   return (
     <Sidebar className="bg-gray-800 text-black shadow-lg">
@@ -32,14 +40,24 @@ const AppSidebar = () => {
                   transition={{ duration: 0.5 }}
                 >
                   <SidebarMenuItem className="transition-transform duration-300 hover:scale-105">
-                    <SidebarMenuButton asChild>
-                      <Link href={item.url} passHref>
-                        <div className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-indigo-600">
-                          {item.icon && <item.icon className="text-xl" />}
-                          <span>{item.title}</span>
-                        </div>
-                      </Link>
-                    </SidebarMenuButton>
+                    {item.title === 'Cerrar Sesion' ? (
+                      <div
+                        className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-indigo-600 cursor-pointer"
+                        onClick={handleLogout} // Al hacer clic, ejecutamos el logout
+                      >
+                        {item.icon && <item.icon className="text-xl" />}
+                        <span>{item.title}</span>
+                      </div>
+                    ) : (
+                      <SidebarMenuButton asChild>
+                        <Link href={item.url || '/'} passHref>
+                          <div className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-indigo-600">
+                            {item.icon && <item.icon className="text-xl" />}
+                            <span>{item.title}</span>
+                          </div>
+                        </Link>
+                      </SidebarMenuButton>
+                    )}
                   </SidebarMenuItem>
                 </motion.div>
               ))}

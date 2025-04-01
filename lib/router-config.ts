@@ -1,10 +1,10 @@
-import { Home, LogIn, MessageSquare} from 'lucide-react';
+import { Home, MessageSquare, LogOut } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 export type RouteConfig = {
   id: string;
   name: string;
-  path: string;
+  path?: string;
   isPublic: boolean;
   icon?: LucideIcon;
   showInSidebar?: boolean;
@@ -28,15 +28,12 @@ export const routerConfig: RouteConfig[] = [
     showInSidebar: true,
   },
   {
-    id: 'login',
+    id: 'logout',
     name: 'Cerrar Sesion',
-    path: '/login',
     isPublic: true,
-    icon: LogIn, // Cerrar sesión
+    icon: LogOut, // Icono de cerrar sesión
     showInSidebar: true,
   },
- 
-
   // Add more routes as needed
 ];
 
