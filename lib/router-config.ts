@@ -1,4 +1,10 @@
-import { Home, MessageSquare, LogOut } from 'lucide-react';
+import {
+  Home,
+  MessageSquare,
+  LogOut,
+  Award,
+  ClipboardList,
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 export type RouteConfig = {
@@ -8,6 +14,7 @@ export type RouteConfig = {
   isPublic: boolean;
   icon?: LucideIcon;
   showInSidebar?: boolean;
+  onlyFor?: string;
 };
 
 export const routerConfig: RouteConfig[] = [
@@ -16,7 +23,7 @@ export const routerConfig: RouteConfig[] = [
     name: 'Pagina Principal',
     path: '/',
     isPublic: false,
-    icon: Home, // Página de inicio
+    icon: Home,
     showInSidebar: true,
   },
   {
@@ -24,25 +31,42 @@ export const routerConfig: RouteConfig[] = [
     name: 'Testimonios',
     path: '/page-2',
     isPublic: false,
-    icon: MessageSquare, // Testimonios (icono de mensajes)
+    icon: MessageSquare,
     showInSidebar: true,
+  },
+  {
+    id: 'desempeno',
+    name: 'Mi Desempeno',
+    path: '/mi-desempeno',
+    isPublic: false,
+    icon: Award,
+    showInSidebar: true,
+  },
+  {
+    id: 'evaluar',
+    name: 'Evaluar Personal',
+    path: '/evaluar-personal',
+    isPublic: false,
+    icon: ClipboardList,
+    showInSidebar: true,
+    onlyFor: 'GERENTE',
   },
   {
     id: 'logout',
     name: 'Cerrar Sesion',
     isPublic: true,
-    icon: LogOut, // Icono de cerrar sesión
+    icon: LogOut,
     showInSidebar: true,
   },
-  // Add more routes as needed
 ];
 
-// Helper function to get sidebar items
+// ✅ Incluimos onlyFor en los ítems del sidebar
 export const getSidebarItems = () =>
   routerConfig
     .filter((route) => route.showInSidebar)
-    .map(({ name, path, icon }) => ({
+    .map(({ name, path, icon, onlyFor }) => ({
       title: name,
       url: path,
-      icon: icon || Home, // Fallback icon if none provided
+      icon: icon || Home,
+      onlyFor, // ✅ añadimos esta propiedad
     }));
