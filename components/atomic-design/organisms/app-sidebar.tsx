@@ -14,20 +14,22 @@ import { getSidebarItems } from '@/lib/router-config';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { useToast } from '@/components/ui/use-toast';
+import { cn } from '@/lib/utils';
+import { useLogout } from '@/hooks/use-logout';
 
 const AppSidebar = () => {
   const { data: session } = useSession();
   const userRole = session?.user?.role;
+  const { handleLogout, isLoggingOut } = useLogout();
+  const { toast } = useToast();
 
   // Solo muestra los ítems que no tienen restricción o que coinciden con el rol del usuario
   const sidebarItems = getSidebarItems().filter((item) => {
     // Muestra si no hay restricción o si el rol coincide
     return !item.onlyFor || item.onlyFor === userRole;
   });
-
-  const handleLogout = () => {
-    signOut({ callbackUrl: window.location.origin });
-  };
 
   return (
     <Sidebar className='bg-gray-800 text-black shadow-lg'>
@@ -48,11 +50,21 @@ const AppSidebar = () => {
                   <SidebarMenuItem className='transition-transform duration-300 hover:scale-105'>
                     {item.title === 'Cerrar Sesion' ? (
                       <div
-                        className='flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-indigo-600 cursor-pointer'
+                        className={cn(
+                          'flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-indigo-600 cursor-pointer',
+                          isLoggingOut && 'opacity-50 cursor-not-allowed'
+                        )}
                         onClick={handleLogout}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            handleLogout();
+                          }
+                        }}
                       >
                         {item.icon && <item.icon className='text-xl' />}
-                        <span>{item.title}</span>
+                        <span>{isLoggingOut ? 'Cerrando sesión...' : item.title}</span>
                       </div>
                     ) : (
                       <SidebarMenuButton asChild>
