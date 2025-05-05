@@ -123,13 +123,13 @@ export default function EvaluarPersonal() {
 
     try {
       setIsLoading(true);
-      const res = await fetch('/api/evaluacion', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const res = await fetch('/api/evaluacion', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
         body: JSON.stringify({ userId: selectedEmployee, ...form }),
-      });
+    });
 
       if (!res.ok) {
         throw new Error('Error al enviar la evaluación');
@@ -240,8 +240,8 @@ export default function EvaluarPersonal() {
                           max={10}
                           step={1}
                           className="flex-1"
-                        />
-                      </div>
+        />
+      </div>
                     );
                   })}
                 </div>
@@ -252,7 +252,7 @@ export default function EvaluarPersonal() {
                 <Label htmlFor="comment" className="text-base font-semibold text-gray-700 block mb-2">
                   Comentarios
                 </Label>
-                <textarea
+      <textarea
                   id="comment"
                   value={form.comment}
                   onChange={(e) => setForm(prev => ({ ...prev, comment: e.target.value }))}
@@ -262,9 +262,9 @@ export default function EvaluarPersonal() {
               </div>
 
               {/* Botón de Enviar */}
-              <Button
+      <Button
                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-6 text-lg font-semibold shadow-lg"
-                onClick={enviarEvaluacion}
+        onClick={enviarEvaluacion}
                 disabled={!selectedEmployee || form.comment.trim() === '' || isLoading}
               >
                 {isLoading ? (
@@ -275,7 +275,7 @@ export default function EvaluarPersonal() {
                 ) : (
                   'Enviar Evaluación'
                 )}
-              </Button>
+      </Button>
             </div>
 
             {/* Columna de la Gráfica - Ocupa 3 columnas en pantallas grandes */}

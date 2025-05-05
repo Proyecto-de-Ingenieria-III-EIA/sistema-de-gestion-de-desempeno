@@ -12,6 +12,7 @@ generator client {
 enum Role {
   EMPLEADO
   GERENTE
+  ADMIN
 }
 
 model User {

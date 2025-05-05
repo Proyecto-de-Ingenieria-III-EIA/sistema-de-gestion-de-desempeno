@@ -20,6 +20,32 @@ interface User {
   role: string;
 }
 
+const getRoleBadgeVariant = (role: string) => {
+  switch (role) {
+    case 'ADMIN':
+      return 'default';
+    case 'GERENTE':
+      return 'destructive';
+    case 'EMPLEADO':
+      return 'secondary';
+    default:
+      return 'secondary';
+  }
+};
+
+const getRoleDisplayName = (role: string) => {
+  switch (role) {
+    case 'ADMIN':
+      return 'Admin';
+    case 'GERENTE':
+      return 'Gerente';
+    case 'EMPLEADO':
+      return 'Empleado';
+    default:
+      return role;
+  }
+};
+
 export default function Usuarios() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -120,7 +146,7 @@ export default function Usuarios() {
 
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-[2000px] mx-auto p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <Card className="bg-white/70 backdrop-blur-sm">
               <CardContent className="p-4">
                 <div className="text-sm text-gray-500">Total Usuarios</div>
@@ -132,6 +158,14 @@ export default function Usuarios() {
                 <div className="text-sm text-gray-500">Administradores</div>
                 <div className="text-2xl font-bold text-indigo-600">
                   {users.filter(u => u.role === 'ADMIN').length}
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-white/70 backdrop-blur-sm">
+              <CardContent className="p-4">
+                <div className="text-sm text-gray-500">Gerentes</div>
+                <div className="text-2xl font-bold text-indigo-600">
+                  {users.filter(u => u.role === 'GERENTE').length}
                 </div>
               </CardContent>
             </Card>
@@ -156,10 +190,10 @@ export default function Usuarios() {
                         <p className="text-sm text-gray-600">{user.email}</p>
                       </div>
                       <Badge 
-                        variant={user.role === 'ADMIN' ? 'default' : 'secondary'}
+                        variant={getRoleBadgeVariant(user.role)}
                         className="ml-2"
                       >
-                        {user.role === 'ADMIN' ? 'Admin' : 'Empleado'}
+                        {getRoleDisplayName(user.role)}
                       </Badge>
                     </div>
                     
@@ -174,6 +208,9 @@ export default function Usuarios() {
                         <SelectContent>
                           <SelectItem value="ADMIN" className="cursor-pointer">
                             Administrador
+                          </SelectItem>
+                          <SelectItem value="GERENTE" className="cursor-pointer">
+                            Gerente
                           </SelectItem>
                           <SelectItem value="EMPLEADO" className="cursor-pointer">
                             Empleado
@@ -198,3 +235,4 @@ export default function Usuarios() {
     </div>
   );
 }
+ 

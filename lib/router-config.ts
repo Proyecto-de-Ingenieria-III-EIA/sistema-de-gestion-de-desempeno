@@ -14,7 +14,6 @@ export type RouteConfig = {
   isPublic: boolean;
   icon?: LucideIcon;
   showInSidebar?: boolean;
-  onlyFor?: string;
 };
 
 export const routerConfig: RouteConfig[] = [
@@ -27,14 +26,6 @@ export const routerConfig: RouteConfig[] = [
     showInSidebar: true,
   },
   {
-    id: 'testimonios',
-    name: 'Testimonios',
-    path: '/page-2',
-    isPublic: false,
-    icon: MessageSquare,
-    showInSidebar: true,
-  },
-  {
     id: 'desempeno',
     name: 'Mi Desempeno',
     path: '/mi-desempeno',
@@ -43,14 +34,14 @@ export const routerConfig: RouteConfig[] = [
     showInSidebar: true,
   },
   {
-    id: 'evaluar',
-    name: 'Evaluar Personal',
-    path: '/evaluar-personal',
+    id: 'testimonios',
+    name: 'Testimonios',
+    path: '/page-2',
     isPublic: false,
-    icon: ClipboardList,
+    icon: MessageSquare,
     showInSidebar: true,
-    onlyFor: 'GERENTE',
   },
+
   {
     id: 'logout',
     name: 'Cerrar Sesion',
@@ -64,9 +55,8 @@ export const routerConfig: RouteConfig[] = [
 export const getSidebarItems = () =>
   routerConfig
     .filter((route) => route.showInSidebar)
-    .map(({ name, path, icon, onlyFor }) => ({
+    .map(({ name, path, icon }) => ({
       title: name,
       url: path,
       icon: icon || Home,
-      onlyFor, // ✅ añadimos esta propiedad
     }));

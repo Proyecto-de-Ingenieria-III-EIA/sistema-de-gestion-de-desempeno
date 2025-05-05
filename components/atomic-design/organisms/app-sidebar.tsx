@@ -11,25 +11,20 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { getSidebarItems } from '@/lib/router-config';
-import { signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import { useLogout } from '@/hooks/use-logout';
 
 const AppSidebar = () => {
   const { data: session } = useSession();
-  const userRole = session?.user?.role;
   const { handleLogout, isLoggingOut } = useLogout();
   const { toast } = useToast();
 
-  // Solo muestra los ítems que no tienen restricción o que coinciden con el rol del usuario
-  const sidebarItems = getSidebarItems().filter((item) => {
-    // Muestra si no hay restricción o si el rol coincide
-    return !item.onlyFor || item.onlyFor === userRole;
-  });
+  // Get all sidebar items without filtering by role
+  const sidebarItems = getSidebarItems();
 
   return (
     <Sidebar className='bg-gray-800 text-black shadow-lg'>
