@@ -3,15 +3,20 @@
 import { motion } from 'framer-motion';
 import { Title } from '@/components/atomic-design/atoms/texts/title';
 import { Button } from '@/components/ui/button';
-import { BarChart, ThumbsUp, Users } from 'lucide-react';
+import { BarChart, ThumbsUp, Users, AlertCircle } from 'lucide-react';
 import Image from 'next/image';
 import { ResponsivePie } from '@nivo/pie';
+import { useEffect, useState } from 'react';
 
-const statsData = [
-  { id: 'Eficiencia', label: 'Eficiencia', value: 45, color: '#4F46E5' },
-  { id: 'Productividad', label: 'Productividad', value: 35, color: '#10B981' },
-  { id: 'Satisfacción', label: 'Satisfacción', value: 20, color: '#F59E0B' },
-];
+interface EvaluationStats {
+  hasEvaluations: boolean;
+  message?: string;
+  skill: number;
+  creativity: number;
+  teamwork: number;
+  punctuality: number;
+  adaptability: number;
+}
 
 const testimonials = [
   {
@@ -33,6 +38,53 @@ const testimonials = [
 ];
 
 const Page2 = () => {
+  const [statsData, setStatsData] = useState<EvaluationStats>({
+    hasEvaluations: false,
+    message: 'Cargando evaluaciones...',
+    skill: 0,
+    creativity: 0,
+    teamwork: 0,
+    punctuality: 0,
+    adaptability: 0,
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch('/api/evaluations/stats');
+        if (!response.ok) throw new Error('Error fetching stats');
+        const data: EvaluationStats = await response.json();
+        setStatsData(data);
+      } catch (error) {
+        console.error('Error fetching evaluation stats:', error);
+        setStatsData({
+          hasEvaluations: false,
+          message: 'Error al cargar las evaluaciones',
+          skill: 0,
+          creativity: 0,
+          teamwork: 0,
+          punctuality: 0,
+          adaptability: 0,
+        });
+      }
+    };
+
+    fetchStats();
+    // Refresh data every 5 minutes
+    const interval = setInterval(fetchStats, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const chartData = statsData.hasEvaluations
+    ? [
+        { id: 'Habilidad', label: 'Habilidad', value: statsData.skill, color: '#4F46E5' },
+        { id: 'Creatividad', label: 'Creatividad', value: statsData.creativity, color: '#10B981' },
+        { id: 'Trabajo en Equipo', label: 'Trabajo en Equipo', value: statsData.teamwork, color: '#F59E0B' },
+        { id: 'Puntualidad', label: 'Puntualidad', value: statsData.punctuality, color: '#EF4444' },
+        { id: 'Adaptabilidad', label: 'Adaptabilidad', value: statsData.adaptability, color: '#8B5CF6' },
+      ]
+    : [];
+
   return (
     <div className='min-h-screen bg-gray-100 text-gray-900 p-8'>
       {/* Título animado */}
@@ -59,20 +111,42 @@ const Page2 = () => {
           <h3 className='text-xl font-semibold text-center mb-4'>
             Rendimiento del Equipo
           </h3>
-          <div className='h-64'>
-            <ResponsivePie
-              data={statsData}
-              margin={{ top: 40, right: 80, bottom: 40, left: 80 }}
-              innerRadius={0.5}
-              padAngle={1.5}
-              cornerRadius={5}
-              colors={{ datum: 'data.color' }}
-              borderWidth={1}
-              borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
-              animate={true}
-              motionConfig='wobbly'
-            />
-          </div>
+          {statsData.hasEvaluations ? (
+            <div className='h-64'>
+              <ResponsivePie
+                data={chartData}
+                margin={{ top: 40, right: 80, bottom: 40, left: 80 }}
+                innerRadius={0.5}
+                padAngle={1.5}
+                cornerRadius={5}
+                colors={{ datum: 'data.color' }}
+                borderWidth={1}
+                borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
+                animate={true}
+                motionConfig='wobbly'
+                tooltip={({ datum }) => (
+                  <div
+                    style={{
+                      padding: '12px',
+                      color: 'white',
+                      background: '#333',
+                      borderRadius: '4px',
+                    }}
+                  >
+                    <strong>{datum.label}:</strong> {datum.value.toFixed(1)}/10
+                  </div>
+                )}
+              />
+            </div>
+          ) : (
+            <div className='h-64 flex flex-col items-center justify-center text-center p-4'>
+              <AlertCircle className='w-12 h-12 text-amber-500 mb-4' />
+              <p className='text-gray-600'>{statsData.message}</p>
+              <p className='text-sm text-gray-500 mt-2'>
+                Las evaluaciones se renuevan cada 3 días
+              </p>
+            </div>
+          )}
         </motion.div>
 
         {/* Tarjetas de impacto */}

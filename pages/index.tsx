@@ -34,16 +34,17 @@ const Home = () => {
               <BarChart className='text-blue-500 w-12 h-12 mr-4' />
               <div>
                 <h3 className='text-lg font-semibold'>
-                  Evaluaciones Recientes
+                  Autoevaluación
                 </h3>
                 <p className='text-gray-500'>
-                  Revisa el desempeño de los últimos 30 días
+                  Realiza tu propia evaluación de desempeño
                 </p>
                 <Button 
                   className='mt-2' 
                   variant='outline'
-                 >
-                  Ver detalles
+                  onClick={() => router.push('/autoevaluacion')}
+                >
+                  Autoevaluarme
                 </Button>
               </div>
             </CardContent>

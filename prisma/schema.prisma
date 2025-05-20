@@ -65,7 +65,7 @@ model Session {
 }
 
 model Evaluation {
-  id           String   @id @default(uuid())
+  id           String   @id @default(cuid())
   userId       String
   managerId    String
   skill        Int
@@ -75,18 +75,24 @@ model Evaluation {
   adaptability Int
   comment      String
   createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Relaciones
   employee User @relation("EmployeeEvaluations", fields: [userId], references: [id])
   manager  User @relation("ManagerEvaluations", fields: [managerId], references: [id])
+
+  @@index([userId, createdAt])
 }
 
 model SelfEvaluation {
-  id         String   @id @default(uuid())
+  id         String   @id @default(cuid())
   userId     String
   skill      Int
   creativity Int
   teamwork   Int
   createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
   User       User     @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
 }

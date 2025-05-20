@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('EMPLEADO', 'GERENTE');
+CREATE TYPE "Role" AS ENUM ('EMPLEADO', 'GERENTE', 'ADMIN');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -8,7 +8,7 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "emailVerified" TIMESTAMP(3),
     "image" TEXT,
-    "role" "Role",
+    "role" "Role" NOT NULL DEFAULT 'EMPLEADO',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -55,6 +55,7 @@ CREATE TABLE "Evaluation" (
     "adaptability" INTEGER NOT NULL,
     "comment" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Evaluation_pkey" PRIMARY KEY ("id")
 );
@@ -67,6 +68,7 @@ CREATE TABLE "SelfEvaluation" (
     "creativity" INTEGER NOT NULL,
     "teamwork" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "SelfEvaluation_pkey" PRIMARY KEY ("id")
 );
@@ -76,6 +78,12 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Session_sessionToken_key" ON "Session"("sessionToken");
+
+-- CreateIndex
+CREATE INDEX "Evaluation_userId_createdAt_idx" ON "Evaluation"("userId", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "SelfEvaluation_userId_createdAt_idx" ON "SelfEvaluation"("userId", "createdAt");
 
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
