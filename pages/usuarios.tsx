@@ -26,6 +26,8 @@ const getRoleBadgeVariant = (role: string) => {
       return 'default';
     case 'GERENTE':
       return 'destructive';
+    case 'USER':
+      return 'secondary';
     case 'EMPLEADO':
       return 'secondary';
     default:
@@ -36,9 +38,10 @@ const getRoleBadgeVariant = (role: string) => {
 const getRoleDisplayName = (role: string) => {
   switch (role) {
     case 'ADMIN':
-      return 'Admin';
+      return 'Administrador';
     case 'GERENTE':
       return 'Gerente';
+    case 'USER':
     case 'EMPLEADO':
       return 'Empleado';
     default:
@@ -173,7 +176,7 @@ export default function Usuarios() {
               <CardContent className="p-4">
                 <div className="text-sm text-gray-500">Empleados</div>
                 <div className="text-2xl font-bold text-indigo-600">
-                  {users.filter(u => u.role === 'EMPLEADO').length}
+                  {users.filter(u => u.role === 'USER').length}
                 </div>
               </CardContent>
             </Card>
@@ -212,7 +215,7 @@ export default function Usuarios() {
                           <SelectItem value="GERENTE" className="cursor-pointer">
                             Gerente
                           </SelectItem>
-                          <SelectItem value="EMPLEADO" className="cursor-pointer">
+                          <SelectItem value="USER" className="cursor-pointer">
                             Empleado
                           </SelectItem>
                         </SelectContent>
