@@ -50,7 +50,7 @@ const AppSidebar = () => {
                           isLoggingOut && 'opacity-50 cursor-not-allowed'
                         )}
                         onClick={handleLogout}
-                        role="button"
+                        role='button'
                         tabIndex={0}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' || e.key === ' ') {
@@ -59,7 +59,9 @@ const AppSidebar = () => {
                         }}
                       >
                         {item.icon && <item.icon className='text-xl' />}
-                        <span>{isLoggingOut ? 'Cerrando sesión...' : item.title}</span>
+                        <span>
+                          {isLoggingOut ? 'Cerrando sesión...' : item.title}
+                        </span>
                       </div>
                     ) : (
                       <SidebarMenuButton asChild>
