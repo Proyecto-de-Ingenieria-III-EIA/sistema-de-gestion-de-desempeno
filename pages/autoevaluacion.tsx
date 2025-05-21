@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -44,9 +44,34 @@ export default function Autoevaluacion() {
     teamwork: 0,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [hasExistingEvaluation, setHasExistingEvaluation] = useState(false);
   const { toast } = useToast();
 
+  useEffect(() => {
+    checkExistingEvaluation();
+  }, []);
+
+  const checkExistingEvaluation = async () => {
+    try {
+      const res = await fetch('/api/self-evaluation/check');
+      if (res.ok) {
+        const data = await res.json();
+        setHasExistingEvaluation(data.hasEvaluation);
+        if (data.hasEvaluation) {
+          toast({
+            title: 'Autoevaluación existente',
+            description: 'Ya has realizado una autoevaluación. No puedes realizar otra en este momento.',
+            variant: 'destructive',
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error checking evaluation:', error);
+    }
+  };
+
   const handleSliderChange = (value: number, field: keyof SelfEvaluationForm) => {
+    if (hasExistingEvaluation) return;
     setForm(prev => ({
       ...prev,
       [field]: Math.max(0, value),
@@ -54,6 +79,15 @@ export default function Autoevaluacion() {
   };
 
   const enviarAutoevaluacion = async () => {
+    if (hasExistingEvaluation) {
+      toast({
+        title: 'No se puede enviar',
+        description: 'Ya tienes una autoevaluación activa',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     try {
       setIsLoading(true);
       const res = await fetch('/api/self-evaluation', {
@@ -65,7 +99,8 @@ export default function Autoevaluacion() {
       });
 
       if (!res.ok) {
-        throw new Error('Error al enviar la autoevaluación');
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Error al enviar la autoevaluación');
       }
 
       toast({
@@ -73,6 +108,7 @@ export default function Autoevaluacion() {
         description: 'Autoevaluación enviada correctamente',
       });
       
+      setHasExistingEvaluation(true);
       // Reset form
       setForm({
         skill: 0,
@@ -82,7 +118,7 @@ export default function Autoevaluacion() {
     } catch (error) {
       toast({
         title: 'Error',
-        description: 'No se pudo enviar la autoevaluación',
+        description: error instanceof Error ? error.message : 'No se pudo enviar la autoevaluación',
         variant: 'destructive',
       });
     } finally {
@@ -154,13 +190,15 @@ export default function Autoevaluacion() {
               <Button
                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-6 text-lg font-semibold shadow-lg"
                 onClick={enviarAutoevaluacion}
-                disabled={isLoading}
+                disabled={isLoading || hasExistingEvaluation}
               >
                 {isLoading ? (
                   <>
                     <span className="animate-spin mr-2">⏳</span>
                     Enviando...
                   </>
+                ) : hasExistingEvaluation ? (
+                  'Autoevaluación ya realizada'
                 ) : (
                   'Enviar Autoevaluación'
                 )}
