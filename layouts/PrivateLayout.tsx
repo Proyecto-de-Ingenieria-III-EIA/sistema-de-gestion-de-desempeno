@@ -4,6 +4,7 @@ import { signIn, useSession } from 'next-auth/react';
 
 const PrivateLayout = ({ children }: { children: React.ReactNode }) => {
   const { status } = useSession();
+
   if (status === 'loading') {
     return <div>Loading...</div>;
   }
@@ -15,10 +16,12 @@ const PrivateLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <main className='flex-1 overflow-auto'>
-        <div className='container'>{children}</div>
-      </main>
+      <div className='flex h-screen overflow-hidden'>
+        <AppSidebar />
+        <main className='flex-1 overflow-auto w-full'>
+          {children}
+        </main>
+      </div>
     </SidebarProvider>
   );
 };

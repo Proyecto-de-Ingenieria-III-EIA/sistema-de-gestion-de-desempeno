@@ -1,3 +1,5 @@
+// prisma/schema.prisma
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -7,16 +9,25 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Role {
+  EMPLEADO
+  GERENTE
+  ADMIN
+}
+
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  role          Role?     @relation(fields: [roleId], references: [id])
-  roleId        String?
-  accounts      Account[]
-  sessions      Session[]
+  id             String           @id @default(cuid())
+  name           String?
+  email          String           @unique
+  emailVerified  DateTime?
+  image          String?
+  role           Role             @default(EMPLEADO)
+  accounts       Account[]
+  sessions       Session[]
+  selfEvaluation SelfEvaluation[]
+
+  evaluationsGiven    Evaluation[] @relation("ManagerEvaluations")
+  evaluationsReceived Evaluation[] @relation("EmployeeEvaluations")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -53,16 +64,35 @@ model Session {
   updatedAt DateTime @updatedAt
 }
 
-enum Enum_RoleName {
-  ADMIN
-  USER
+model Evaluation {
+  id           String   @id @default(cuid())
+  userId       String
+  managerId    String
+  skill        Int
+  creativity   Int
+  teamwork     Int
+  punctuality  Int
+  adaptability Int
+  comment      String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relaciones
+  employee User @relation("EmployeeEvaluations", fields: [userId], references: [id])
+  manager  User @relation("ManagerEvaluations", fields: [managerId], references: [id])
+
+  @@index([userId, createdAt])
 }
 
-model Role {
-  id    String        @id @default(cuid())
-  name  Enum_RoleName
-  users User[]
+model SelfEvaluation {
+  id         String   @id @default(cuid())
+  userId     String
+  skill      Int
+  creativity Int
+  teamwork   Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  User       User     @relation(fields: [userId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([userId, createdAt])
 }
